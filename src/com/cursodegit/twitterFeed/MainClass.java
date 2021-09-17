@@ -6,29 +6,25 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Base64;
+import java.util.Map;
+import com.fasterxml.jackson.databind.*;
 
-/*
-import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
-import org.json.simple.parser.ParseException;
-import org.json.simple.parser.JSONParser;
-*/
 public class MainClass {
 
 	public static void main(String[] args) throws Exception {
 		System.out.println("¡Hola, caracola!");
 		
 		try {
-			String accessToken = getAccessToken();
+			Map<String, String> accessTokenMap = getAccessToken();
 			
-	        System.out.println(accessToken);
+	        System.out.println(accessTokenMap.get("access_token"));
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 			throw e;
 		}
 	}
 	
-	public static String getAccessToken() throws IOException, InterruptedException {
+	public static Map<String, String> getAccessToken() throws IOException, InterruptedException {
 		
         String oAuthConsumerKey = "yv4UDBXKGzuRf58FDzq6O8YVd";
         String oAuthConsumerSecret = "pyWrYPTBHLleabhJ0diG8UIJNlpJDDxz56taz80kVvwvfRYlw8";
@@ -38,8 +34,8 @@ public class MainClass {
 		System.out.println(aux);
 		System.out.println(consumerInfo);
 		
+		// Get the token
 		HttpClient client = HttpClient.newHttpClient();
-
 		HttpRequest request = HttpRequest.newBuilder(
 		       URI.create("https://api.twitter.com/oauth2/token"))
 		   .header("Authorization", "Basic " +  consumerInfo)
@@ -49,9 +45,12 @@ public class MainClass {
 
         HttpResponse<String> response = client.send(request,
                 HttpResponse.BodyHandlers.ofString());
-		System.out.println(response.statusCode());
 
-        return response.body();
+		String body = response.body();
+	    Map<String, String> map = new ObjectMapper().readValue(body, Map.class);
+
+		
+        return map;
 	}
 
 }

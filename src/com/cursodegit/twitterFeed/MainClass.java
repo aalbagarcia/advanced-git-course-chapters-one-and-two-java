@@ -7,17 +7,21 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Base64;
 import java.util.Map;
+import java.util.List;
 import com.fasterxml.jackson.databind.*;
 
 public class MainClass {
-
+	
+	private static Map<String, String> accessTokenMap;
+	
 	public static void main(String[] args) throws Exception {
-		System.out.println("¡Hola, caracola!");
-		
 		try {
-			Map<String, String> accessTokenMap = getAccessToken();
-			
-	        System.out.println(accessTokenMap.get("access_token"));
+			accessTokenMap = getAccessToken();
+			List<Map<String, Object>> tweets = getTweets("aalbagarcia", 10);
+			for (int i=0; i < tweets.size(); i++) {
+				String line = String.format("%s", tweets.get(i).get("text"));
+				System.out.println(line); 
+			}
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 			throw e;
@@ -46,11 +50,31 @@ public class MainClass {
         HttpResponse<String> response = client.send(request,
                 HttpResponse.BodyHandlers.ofString());
 
-		String body = response.body();
+        String body = response.body();
 	    Map<String, String> map = new ObjectMapper().readValue(body, Map.class);
 
 		
         return map;
 	}
 
+	public static List<Map<String, Object>> getTweets(String username, int count) throws IOException, InterruptedException {
+		String uri = String.format("https://api.twitter.com/1.1/statuses/user_timeline.json?count=%d&screen_name=%s&trim_user=1&exclude_replies=1", count, username );
+		// Get the token
+		HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder(
+		       URI.create(uri))
+		   .header("Authorization", "Bearer " +  accessTokenMap.get("access_token"))
+		   .GET()
+		   .build();
+
+        HttpResponse<String> response = client.send(request,
+                HttpResponse.BodyHandlers.ofString());
+
+		String body = response.body();
+		System.out.println(body);
+	    List<Map<String, Object>> map = new ObjectMapper().readValue(body, List.class);
+
+		
+        return map;
+	}
 }

@@ -13,11 +13,12 @@ import com.fasterxml.jackson.databind.*;
 public class MainClass {
 	
 	private static Map<String, String> accessTokenMap;
-	
+	private static String twitterHandle = "";
 	public static void main(String[] args) throws Exception {
+		twitterHandle = args[0];
 		try {
 			accessTokenMap = getAccessToken();
-			List<Map<String, Object>> tweets = getTweets("aalbagarcia", 10);
+			List<Map<String, Object>> tweets = getTweets(twitterHandle, 10);
 			for (int i=0; i < tweets.size(); i++) {
 				String line = String.format("%s", tweets.get(i).get("text"));
 				System.out.println(line); 

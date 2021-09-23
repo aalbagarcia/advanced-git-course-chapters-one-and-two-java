@@ -15,7 +15,13 @@ public class MainClass {
 	private static Map<String, String> accessTokenMap;
 	private static String twitterHandle = "";
 	public static void main(String[] args) throws Exception {
+		if ( args.length == 0 ) {
+			System.out.println("Debes introducir el usuario de twitter.");
+			System.out.println(Usage());
+			return;
+		}
 		twitterHandle = args[0];
+		
 		try {
 			accessTokenMap = getAccessToken();
 			List<Map<String, Object>> tweets = getTweets(twitterHandle, 10);
@@ -78,4 +84,13 @@ public class MainClass {
 		
         return map;
 	}
+
+	public static String Usage() {
+	    return """
+	    		Muestra los tweets de un usuario.
+	    		
+	    		Uso:
+	            	> tweets [usuario]
+            	""";
+	    }
 }

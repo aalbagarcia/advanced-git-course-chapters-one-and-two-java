@@ -14,6 +14,7 @@ public class MainClass {
 	
 	private static final String ANSI_RESET = "\033[0m";
 	private static final String ANSI_RED = "\033[31;1m";
+	private static final String ANSI_GREEN = "\033[32;1m";
 	
 	private static Map<String, String> accessTokenMap;
 	private static String twitterHandle = "";
@@ -89,11 +90,11 @@ public class MainClass {
 	}
 
 	public static String Usage() {
-	    return """
+	    return ANSI_GREEN+"""
 	    		Muestra los tweets de un usuario.
 	    		
 	    		Uso:
 	            	> tweets [usuario]
-            	""";
+            	"""+ANSI_RESET;
 	    }
 }

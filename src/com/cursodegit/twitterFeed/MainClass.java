@@ -12,11 +12,14 @@ import com.fasterxml.jackson.databind.*;
 
 public class MainClass {
 	
+	private static final String ANSI_RESET = "\033[0m";
+	private static final String ANSI_RED = "\033[31;1m";
+	
 	private static Map<String, String> accessTokenMap;
 	private static String twitterHandle = "";
 	public static void main(String[] args) throws Exception {
 		if ( args.length == 0 ) {
-			System.out.println("Debes introducir el usuario de twitter.");
+			System.out.println(ANSI_RED+"Debes introducir el usuario de twitter."+ANSI_RESET);
 			System.out.println(Usage());
 			return;
 		}

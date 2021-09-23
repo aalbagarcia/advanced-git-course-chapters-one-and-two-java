@@ -14,6 +14,8 @@ public class MainClass {
 	
 	private static Map<String, String> accessTokenMap;
 	private static String twitterHandle = "";
+	
+	// Comentarios añadidos por nuestro compañeros (simulado como commit en Bitbucket/Github/Gitlab)
 	public static void main(String[] args) throws Exception {
 		if ( args.length == 0 ) {
 			System.out.println("Debes introducir el usuario de twitter.");
@@ -35,6 +37,7 @@ public class MainClass {
 		}
 	}
 	
+	// Comentarios añadidos por nuestro compañeros (simulado como commit en Bitbucket/Github/Gitlab)
 	public static Map<String, String> getAccessToken() throws IOException, InterruptedException {
 		
         String oAuthConsumerKey = "yv4UDBXKGzuRf58FDzq6O8YVd";
@@ -64,6 +67,7 @@ public class MainClass {
         return map;
 	}
 
+	// Comentarios añadidos por nuestro compañeros (simulado como commit en Bitbucket/Github/Gitlab)
 	public static List<Map<String, Object>> getTweets(String username, int count) throws IOException, InterruptedException {
 		String uri = String.format("https://api.twitter.com/1.1/statuses/user_timeline.json?count=%d&screen_name=%s&trim_user=1&exclude_replies=1", count, username );
 		// Get the token
@@ -84,7 +88,8 @@ public class MainClass {
 		
         return map;
 	}
-
+	
+	// Comentarios añadidos por nuestro compañeros (simulado como commit en Bitbucket/Github/Gitlab)
 	public static String Usage() {
 	    return """
 	    		Muestra los tweets de un usuario.

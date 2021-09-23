@@ -20,7 +20,7 @@ public class MainClass {
 			accessTokenMap = getAccessToken();
 			List<Map<String, Object>> tweets = getTweets(twitterHandle, 10);
 			for (int i=0; i < tweets.size(); i++) {
-				String line = String.format("%s", tweets.get(i).get("text"));
+				String line = String.format("%s\t%s", tweets.get(i).get("created_at"), tweets.get(i).get("text"));
 				System.out.println(line); 
 			}
 		} catch(Exception e) {

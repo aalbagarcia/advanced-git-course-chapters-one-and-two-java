@@ -3,8 +3,6 @@ package com.cursodegit.twitterFeed;
 import java.util.Map;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.*;
 
 public class MainClass {
 	
@@ -28,28 +26,15 @@ public class MainClass {
 		
 		try {
 			Connection conn = new Connection(oAuthConsumerKey, oAuthConsumerSecret);
+			Client client = new Client(conn);
 			
-			List<Map<String, Object>> tweets = getTweets(conn, twitterHandle, 10);
-			for (int i=0; i < tweets.size(); i++) {
-				String line = String.format("%s\t%s", tweets.get(i).get("created_at"), tweets.get(i).get("text"));
-				System.out.println(line); 
-			}
+			List<Map<String, Object>> tweets = client.getTweets(twitterHandle, 10);
+			displayTweets(tweets);
+			
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 			throw e;
 		}
-	}
-	
-
-	// Comentarios añadidos por nuestro compañeros (simulado como commit en Bitbucket/Github/Gitlab)
-	public static List<Map<String, Object>> getTweets(Connection conn, String username, int count) throws ConnectionException, JsonMappingException, JsonProcessingException {
-		String uri = String.format("https://api.twitter.com/1.1/statuses/user_timeline.json?count=%d&screen_name=%s&trim_user=1&exclude_replies=1", count, username );
-
-		String body = conn.get(uri);
-		System.out.println(body);
-	    List<Map<String, Object>> map = new ObjectMapper().readValue(body, List.class);
-	
-        return map;
 	}
 	
 	// Comentarios añadidos por nuestro compañeros (simulado como commit en Bitbucket/Github/Gitlab)
@@ -61,4 +46,12 @@ public class MainClass {
 	            	> tweets [usuario]
             	"""+ANSI_RESET;
 	    }
+	
+	public static void displayTweets(List<Map<String, Object>> tweets) {
+		for (int i=0; i < tweets.size(); i++) {
+			String line = String.format("%s\t%s", tweets.get(i).get("created_at"), tweets.get(i).get("text"));
+			System.out.println(line); 
+		}
+		
+	}
 }

@@ -1,14 +1,8 @@
 package com.cursodegit.twitterFeed;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.Base64;
 import java.util.Map;
 import java.util.List;
-import com.fasterxml.jackson.databind.*;
+
 
 public class MainClass {
 	
@@ -17,11 +11,13 @@ public class MainClass {
 	private static final String ANSI_GREEN = "\033[32;1m";
 	private static final String ANSI_YELLOW = "\033[33;1m";
 	
-	private static Map<String, String> accessTokenMap;
 	private static String twitterHandle = "";
 	
 	// Comentarios añadidos por nuestro compañeros (simulado como commit en Bitbucket/Github/Gitlab)
 	public static void main(String[] args) throws Exception {
+	    String oAuthConsumerKey = "yv4UDBXKGzuRf58FDzq6O8YVd";
+	    String oAuthConsumerSecret = "pyWrYPTBHLleabhJ0diG8UIJNlpJDDxz56taz80kVvwvfRYlw8";
+	    
 		if ( args.length == 0 ) {
 			System.out.println(ANSI_RED+"Debes introducir el usuario de twitter."+ANSI_RESET);
 			System.out.println(Usage());
@@ -30,74 +26,15 @@ public class MainClass {
 		twitterHandle = args[0];
 		
 		try {
-			accessTokenMap = getAccessToken();
-			List<Map<String, Object>> tweets = getTweets(twitterHandle, 10);
-			for (int i=0; i < tweets.size(); i++) {
-				String line = String.format("%s%s%s\t%s%s%s", 
-						ANSI_YELLOW, 
-						tweets.get(i).get("created_at"), 
-						ANSI_RESET, 
-						ANSI_GREEN, 
-						tweets.get(i).get("text"), 
-						ANSI_RESET);
-				System.out.println(line); 
-			}
+			Connection conn = new Connection(oAuthConsumerKey, oAuthConsumerSecret);
+			Client client = new Client(conn);
+			
+			List<Map<String, Object>> tweets = client.getTweets(twitterHandle, 10);
+			displayTweets(tweets);
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 			throw e;
 		}
-	}
-	
-	// Comentarios añadidos por nuestro compañeros (simulado como commit en Bitbucket/Github/Gitlab)
-	public static Map<String, String> getAccessToken() throws IOException, InterruptedException {
-		
-        String oAuthConsumerKey = "yv4UDBXKGzuRf58FDzq6O8YVd";
-        String oAuthConsumerSecret = "pyWrYPTBHLleabhJ0diG8UIJNlpJDDxz56taz80kVvwvfRYlw8";
-        String aux = oAuthConsumerKey + ":" + oAuthConsumerSecret;
-		String consumerInfo = Base64.getEncoder().encodeToString(aux.getBytes());;
-		
-		System.out.println(aux);
-		System.out.println(consumerInfo);
-		
-		// Get the token
-		HttpClient client = HttpClient.newHttpClient();
-		HttpRequest request = HttpRequest.newBuilder(
-		       URI.create("https://api.twitter.com/oauth2/token"))
-		   .header("Authorization", "Basic " +  consumerInfo)
-		   .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
-		   .POST(HttpRequest.BodyPublishers.ofString("grant_type=client_credentials"))
-		   .build();
-
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-
-        String body = response.body();
-	    Map<String, String> map = new ObjectMapper().readValue(body, Map.class);
-
-		
-        return map;
-	}
-
-	// Comentarios añadidos por nuestro compañeros (simulado como commit en Bitbucket/Github/Gitlab)
-	public static List<Map<String, Object>> getTweets(String username, int count) throws IOException, InterruptedException {
-		String uri = String.format("https://api.twitter.com/1.1/statuses/user_timeline.json?count=%d&screen_name=%s&trim_user=1&exclude_replies=1", count, username );
-		// Get the token
-		HttpClient client = HttpClient.newHttpClient();
-		HttpRequest request = HttpRequest.newBuilder(
-		       URI.create(uri))
-		   .header("Authorization", "Bearer " +  accessTokenMap.get("access_token"))
-		   .GET()
-		   .build();
-
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-
-		String body = response.body();
-		System.out.println(body);
-	    List<Map<String, Object>> map = new ObjectMapper().readValue(body, List.class);
-
-		
-        return map;
 	}
 	
 	// Comentarios añadidos por nuestro compañeros (simulado como commit en Bitbucket/Github/Gitlab)
@@ -109,4 +46,18 @@ public class MainClass {
 	            	> tweets [usuario]
             	"""+ANSI_RESET;
 	    }
+	
+	public static void displayTweets(List<Map<String, Object>> tweets) {
+		for (int i=0; i < tweets.size(); i++) {
+			String line = String.format("%s%s%s\t%s%s%s", 
+					ANSI_YELLOW, 
+					tweets.get(i).get("created_at"), 
+					ANSI_RESET, 
+					ANSI_GREEN, 
+					tweets.get(i).get("text"), 
+					ANSI_RESET);
+			System.out.println(line); 
+		}
+		
+	}
 }

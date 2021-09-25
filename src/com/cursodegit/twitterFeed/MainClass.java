@@ -15,6 +15,7 @@ public class MainClass {
 	private static final String ANSI_RESET = "\033[0m";
 	private static final String ANSI_RED = "\033[31;1m";
 	private static final String ANSI_GREEN = "\033[32;1m";
+	private static final String ANSI_YELLOW = "\033[33;1m";
 	
 	private static Map<String, String> accessTokenMap;
 	private static String twitterHandle = "";
@@ -32,7 +33,13 @@ public class MainClass {
 			accessTokenMap = getAccessToken();
 			List<Map<String, Object>> tweets = getTweets(twitterHandle, 10);
 			for (int i=0; i < tweets.size(); i++) {
-				String line = String.format("%s\t%s", tweets.get(i).get("created_at"), tweets.get(i).get("text"));
+				String line = String.format("%s%s%s\t%s%s%s", 
+						ANSI_YELLOW, 
+						tweets.get(i).get("created_at"), 
+						ANSI_RESET, 
+						ANSI_GREEN, 
+						tweets.get(i).get("text"), 
+						ANSI_RESET);
 				System.out.println(line); 
 			}
 		} catch(Exception e) {

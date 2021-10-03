@@ -10,13 +10,14 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class Connection {
+public class Connection extends ConnectionA {
     private String oAuthConsumerKey = "";
     private String oAuthConsumerSecret = "";
     
-	private Map<String, String> accessTokenMap;
+	protected Map<String, String> accessTokenMap;
 	
 	public Connection(String oAuthConsumerKey, String oAuthConsumerSecret) throws ConnectionException {
+		super();
 		this.oAuthConsumerKey = oAuthConsumerKey;
 		this.oAuthConsumerSecret = oAuthConsumerSecret;
 		try {
@@ -50,6 +51,7 @@ public class Connection {
                 HttpResponse.BodyHandlers.ofString());
 
         String body = response.body();
+        System.out.println(body);
 	    this.accessTokenMap = new ObjectMapper().readValue(body, Map.class);
 	}
 	

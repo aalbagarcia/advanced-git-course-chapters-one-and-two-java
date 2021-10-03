@@ -9,9 +9,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Client {
 	
-	public Connection conn;
+	public ConnectionA conn;
 	
-	Client(Connection conn) {
+	Client(ConnectionA conn) {
 		this.conn = conn;
 	}
 	
